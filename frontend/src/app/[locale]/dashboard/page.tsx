@@ -6,16 +6,13 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [profile, setProfile] = useState({ username: "", calendly: "" });
 
   if (loading) return <div>Loading...</div>;
   if (!user) {
     router.replace("/auth");
     return null;
   }
-
-  // Placeholder state for profile and looks
-  const [profile, setProfile] = useState({ username: "", calendly: "" });
-  const [looks, setLooks] = useState([]);
 
   return (
     <div className="max-w-3xl mx-auto py-10 px-4">
