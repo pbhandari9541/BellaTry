@@ -103,8 +103,8 @@ jobs:
 
       - name: Deploy backend to Cloud Run
         run: |
-          gcloud run deploy tradeadvisor-backend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-backend:${{ github.sha }} \
+          gcloud run deploy bellatry-backend \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-backend:${{ github.sha }} \
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
@@ -112,11 +112,8 @@ jobs:
 
       - name: Deploy frontend to Cloud Run
         run: |
-          # Get the backend URL
-          # BACKEND_URL=$(gcloud run services describe tradeadvisor-backend --region us-central1 --format='value(status.url)')
-          
-          gcloud run deploy tradeadvisor-frontend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-frontend:${{ github.sha }} \
+          gcloud run deploy bellatry-frontend \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-frontend:${{ github.sha }} \
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
