@@ -67,7 +67,7 @@ jobs:
         id: backend-build
         run: |
           cd backend
-          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-backend:${{ github.sha }} . --format='get(id)')
+          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-backend:${{ github.sha }} . --format='get(id)')
           echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
           
           # Wait for build to complete and check status
@@ -86,7 +86,7 @@ jobs:
         id: frontend-build
         run: |
           cd frontend
-          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-frontend:${{ github.sha }},_NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }},_NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }},_NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},_NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }} . --format='get(id)')
+          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-frontend:${{ github.sha }},_NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }},_NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }},_NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},_NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }} . --format='get(id)')
           echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
           
           # Wait for build to complete and check status
@@ -108,7 +108,7 @@ jobs:
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars="ENVIRONMENT=${{ inputs.environment }},SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }},SUPABASE_DB_URL=${{ secrets.SUPABASE_DB_URL }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},OPENAI_DEFAULT_MODEL=${{ secrets.OPENAI_DEFAULT_MODEL }},OPENAI_EMBEDDING_MODEL=${{ secrets.OPENAI_EMBEDDING_MODEL }},ALPHA_VANTAGE_API_KEY=${{ secrets.ALPHA_VANTAGE_API_KEY }},PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }},PINECONE_ENVIRONMENT=${{ secrets.PINECONE_ENVIRONMENT }},PINECONE_INDEX=${{ secrets.PINECONE_INDEX }},REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }},REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }},REDDIT_USER_AGENT=${{ secrets.REDDIT_USER_AGENT }},REDDIT_USERNAME=${{ secrets.REDDIT_USERNAME }},REDDIT_PASSWORD=${{ secrets.REDDIT_PASSWORD }},SUPABASE_JWT_SECRET=${{ secrets.SUPABASE_JWT_SECRET }},NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }},"
+            --set-env-vars="ENVIRONMENT=${{ inputs.environment }},SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }},SUPABASE_DB_URL=${{ secrets.SUPABASE_DB_URL }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},OPENAI_DEFAULT_MODEL=${{ secrets.OPENAI_DEFAULT_MODEL }},OPENAI_EMBEDDING_MODEL=${{ secrets.OPENAI_EMBEDDING_MODEL }},SUPABASE_JWT_SECRET=${{ secrets.SUPABASE_JWT_SECRET }},NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }},"
 
       - name: Deploy frontend to Cloud Run
         run: |
