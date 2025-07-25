@@ -28,7 +28,7 @@ async def health_check(supabase=Depends(get_supabase_client)):
         # If we get here, Supabase is working
         return {
             "status": "healthy",
-            "service": "TradeAdvisor API",
+            "service": "BellaTry API",
             "version": "1.0.0",
             "environment": os.getenv("ENV", "development"),
             "uptime": uptime,
@@ -42,7 +42,7 @@ async def health_check(supabase=Depends(get_supabase_client)):
         logger.error(f"Health check failed: {e}")
         return {
             "status": "unhealthy",
-            "service": "TradeAdvisor API",
+            "service": "BellaTry API",
             "version": "1.0.0",
             "environment": os.getenv("ENV", "development"),
             "uptime": uptime,

@@ -46,6 +46,9 @@ jobs:
     name: Deploy to GCP
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      BACKEND_SERVICE: bellatry-backend
+      FRONTEND_SERVICE: bellatry-frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -67,10 +70,8 @@ jobs:
         id: backend-build
         run: |
           cd backend
-          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-backend:${{ github.sha }} . --format='get(id)')
+          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/$BACKEND_SERVICE:${{ github.sha }} . --format='get(id)')
           echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
-          
-          # Wait for build to complete and check status
           while true; do
             STATUS=$(gcloud builds describe $BUILD_ID --format='get(status)')
             if [ "$STATUS" = "SUCCESS" ]; then
@@ -86,10 +87,8 @@ jobs:
         id: frontend-build
         run: |
           cd frontend
-          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-frontend:${{ github.sha }},_NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }},_NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }},_NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},_NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }} . --format='get(id)')
+          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/$FRONTEND_SERVICE:${{ github.sha }},_NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }},_NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }},_NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},_NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }} . --format='get(id)')
           echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
-          
-          # Wait for build to complete and check status
           while true; do
             STATUS=$(gcloud builds describe $BUILD_ID --format='get(status)')
             if [ "$STATUS" = "SUCCESS" ]; then
@@ -103,8 +102,8 @@ jobs:
 
       - name: Deploy backend to Cloud Run
         run: |
-          gcloud run deploy bellatry-backend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-backend:${{ github.sha }} \
+          gcloud run deploy $BACKEND_SERVICE \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/$BACKEND_SERVICE:${{ github.sha }} \
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
@@ -112,8 +111,8 @@ jobs:
 
       - name: Deploy frontend to Cloud Run
         run: |
-          gcloud run deploy bellatry-frontend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/bellatry-frontend:${{ github.sha }} \
+          gcloud run deploy $FRONTEND_SERVICE \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/$FRONTEND_SERVICE:${{ github.sha }} \
             --region us-central1 \
             --platform managed \
             --allow-unauthenticated \
