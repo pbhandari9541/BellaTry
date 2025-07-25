@@ -56,7 +56,7 @@ app.include_router(health.router)
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to TradeAdvisor API",
+        "message": "Welcome to BellaTry API",
         "environment": ENVIRONMENT,
         "port": PORT
     }
