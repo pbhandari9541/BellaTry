@@ -1,0 +1,123 @@
+name: Deploy
+
+# Updated Workload Identity Provider configuration for pbhandari9541/TRADEADVISOR
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    secrets:
+      WIF_PROVIDER:
+        required: true
+      WIF_SERVICE_ACCOUNT:
+        required: true
+      GCP_PROJECT_ID:
+        required: true
+      SUPABASE_URL:
+        required: true
+      SUPABASE_KEY:
+        required: true
+      SUPABASE_DB_URL:
+        required: true
+      OPENAI_API_KEY:
+        required: true
+      OPENAI_DEFAULT_MODEL:
+        required: true
+      OPENAI_EMBEDDING_MODEL:
+        required: true
+      NEXT_PUBLIC_SUPABASE_URL:
+        required: true
+      NEXT_PUBLIC_SUPABASE_KEY:
+        required: true
+      NEXT_PUBLIC_API_URL:
+        required: true
+      NEXT_PUBLIC_APP_URL:
+        required: true
+      SUPABASE_JWT_SECRET:
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy-to-gcp:
+    name: Deploy to GCP
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build and push backend image
+        id: backend-build
+        run: |
+          cd backend
+          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-backend:${{ github.sha }} . --format='get(id)')
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+          
+          # Wait for build to complete and check status
+          while true; do
+            STATUS=$(gcloud builds describe $BUILD_ID --format='get(status)')
+            if [ "$STATUS" = "SUCCESS" ]; then
+              break
+            elif [ "$STATUS" = "FAILURE" ] || [ "$STATUS" = "TIMEOUT" ] || [ "$STATUS" = "CANCELLED" ]; then
+              echo "Build failed with status: $STATUS"
+              exit 1
+            fi
+            sleep 10
+          done
+
+      - name: Build and push frontend image
+        id: frontend-build
+        run: |
+          cd frontend
+          BUILD_ID=$(gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-frontend:${{ github.sha }},_NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }},_NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }},_NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},_NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }} . --format='get(id)')
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+          
+          # Wait for build to complete and check status
+          while true; do
+            STATUS=$(gcloud builds describe $BUILD_ID --format='get(status)')
+            if [ "$STATUS" = "SUCCESS" ]; then
+              break
+            elif [ "$STATUS" = "FAILURE" ] || [ "$STATUS" = "TIMEOUT" ] || [ "$STATUS" = "CANCELLED" ]; then
+              echo "Build failed with status: $STATUS"
+              exit 1
+            fi
+            sleep 10
+          done
+
+      - name: Deploy backend to Cloud Run
+        run: |
+          gcloud run deploy tradeadvisor-backend \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-backend:${{ github.sha }} \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars="ENVIRONMENT=${{ inputs.environment }},SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }},SUPABASE_DB_URL=${{ secrets.SUPABASE_DB_URL }},OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},OPENAI_DEFAULT_MODEL=${{ secrets.OPENAI_DEFAULT_MODEL }},OPENAI_EMBEDDING_MODEL=${{ secrets.OPENAI_EMBEDDING_MODEL }},ALPHA_VANTAGE_API_KEY=${{ secrets.ALPHA_VANTAGE_API_KEY }},PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }},PINECONE_ENVIRONMENT=${{ secrets.PINECONE_ENVIRONMENT }},PINECONE_INDEX=${{ secrets.PINECONE_INDEX }},REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }},REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }},REDDIT_USER_AGENT=${{ secrets.REDDIT_USER_AGENT }},REDDIT_USERNAME=${{ secrets.REDDIT_USERNAME }},REDDIT_PASSWORD=${{ secrets.REDDIT_PASSWORD }},SUPABASE_JWT_SECRET=${{ secrets.SUPABASE_JWT_SECRET }},NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }},"
+
+      - name: Deploy frontend to Cloud Run
+        run: |
+          # Get the backend URL
+          # BACKEND_URL=$(gcloud run services describe tradeadvisor-backend --region us-central1 --format='value(status.url)')
+          
+          gcloud run deploy tradeadvisor-frontend \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tradeadvisor-frontend:${{ github.sha }} \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars="NODE_ENV=${{ inputs.environment }},NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }},NEXT_PUBLIC_SUPABASE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }}" 

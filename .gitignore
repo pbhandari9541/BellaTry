@@ -1,0 +1,33 @@
+.vscode/
+__pycache__/
+*.pyc
+venv/
+node_modules/
+.env
+*.log
+.DS_Store 
+.next/
+.coverage
+*.tsbuildinfo
+PROMPT.txt
+sec-edgar-filings/
+.env.local
+log/
+
+# Temporary test files and API responses
+*_response.json
+*_final.json
+*_fixed.json
+*_debug.json
+debug_*.json
+response_*.json
+analyze.json
+backend/analyze.json
+backend/response.json
+
+# Test artifacts
+test_*.json
+temp_*.json
+*.tmp
+
+FinRobot/

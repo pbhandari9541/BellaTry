@@ -1,0 +1,58 @@
+{
+  "HomePage": {
+    "title": "Welcome to BellaTry",
+    "subtitle": "Virtual Makeup Try-On & MUA Dashboard",
+    "description": "Try on makeup virtually, discover new looks, and connect with top MUAs. Your beauty, your way.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "Navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "portfolio": "My Looks",
+    "analysis": "Try-On",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "Trading": {
+    "portfolio": "Portfolio",
+    "balance": "Balance",
+    "profit": "Profit",
+    "loss": "Loss",
+    "buy": "Buy",
+    "sell": "Sell",
+    "price": "Price",
+    "volume": "Volume",
+    "change": "Change",
+    "marketCap": "Market Cap"
+  },
+  "Auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?"
+  },
+  "TestPage": {
+    "title": "Test Page",
+    "description": "A sandbox page for trying out new features"
+  }
+} 

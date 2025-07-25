@@ -1,0 +1,104 @@
+/* Theme Colors - Using OKLCH for better color management */
+:root {
+  /* Brand Colors */
+  --primary: oklch(0.55 0.18 264);
+  --primary-brand: oklch(0.55 0.18 264); /* Facebook Blue #1877F2 */
+  --primary-background: oklch(98% 0.01 270);    /* Light gray */
+  --primary-foreground: oklch(1 0 0); /* Pure White */
+  --primary-background-hover: oklch(0.48 0.20 264);    /* Darker Facebook blue */
+  --primary-text: oklch(25% 0 0);    /* Almost Black */
+
+  --secondary-brand: oklch(0.65 0.15 264);   /* Lighter Facebook Blue */
+  --secondary-text: oklch(50% 0.01 270);    /* Grayish */ 
+  --secondary-background: oklch(0.97 0.001 106.424);
+  --secondary-foreground: oklch(0.216 0.006 56.043);
+  --secondary-background-hover: var(--primary-brand);
+
+  --destructive: oklch(60% 0.2 30); /* Bright Red */  
+  --destructive-foreground: oklch(1 0 0); /* Pure White */
+  --destructive-background-hover: var(--primary-text); 
+  --destructive-light: oklch(85% 0.15 30); /* Light Red */
+  --destructive-dark: oklch(45% 0.25 30); /* Dark Red */
+
+  --warning: oklch(85% 0.2 90); /* Gold */
+  --success: oklch(70% 0.2 150); /* Green */
+  --success-light: oklch(85% 0.15 150); /* Light Green */
+  --success-dark: oklch(55% 0.25 150); /* Dark Green */
+  
+  /* Base Layout Colors - Clean whites and grays */
+  --background: oklch(1 0 0); /* Pure White */
+  --foreground: oklch(0.147 0.004 49.25);   /* Dark Gray */
+  --layout-background: oklch(1 0 0); /* Pure White */
+  
+  /* Component Background Hierarchy */
+  --component-background: oklch(0.98 0 0); /* Very light gray for components */
+  --card-background: oklch(1 0 0); /* Pure white for cards */
+  --surface-background: oklch(0.99 0 0); /* Slightly off-white for surfaces */
+
+  /* Component Colors */
+  --accent: oklch(76.59% 0.0079 260.73);
+  --accent-foreground: var(--secondary-text);
+  
+  --card: var(--card-background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --muted-light: oklch(0.99 0 0); /* Very light muted */
+  --muted-dark: oklch(0.85 0 0); /* Darker muted */
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.923 0.003 48.717);
+  --input: oklch(0.923 0.003 48.717);
+  --input-placeholder: oklch(0.553 0.013 58.071);
+  --ring: oklch(0.709 0.01 56.259);
+}
+
+/* Dark Theme */
+.dark {
+  --secondary: oklch(0.55 0.18 264);
+  --primary-brand: oklch(0.60 0.18 264); /* Brighter Facebook Blue for dark mode */
+  --primary-foreground: oklch(1 0 0); /* Pure White */
+  --primary-background-hover: oklch(0.52 0.20 264);  /* Lighter Facebook blue for dark mode */
+  --secondary-brand: oklch(0.70 0.15 264);   /* Even lighter Facebook Blue */
+  --primary-background: oklch(12% 0.01 270);    /* Dark gray */
+  --primary-text: oklch(90% 0 0);    /* Soft white */
+  --secondary-text: oklch(65% 0.01 270);    /* Muted Gray */ 
+  --destructive: oklch(60% 0.2 30); /* Bright Red */  
+  --destructive-light: oklch(75% 0.15 30); /* Light Red for dark mode */
+  --destructive-dark: oklch(45% 0.25 30); /* Dark Red */
+  --warning: oklch(85% 0.2 90); /* Gold */
+  --success: oklch(70% 0.2 150); /* Green */
+  --success-light: oklch(80% 0.15 150); /* Light Green for dark mode */
+  --success-dark: oklch(55% 0.25 150); /* Dark Green */
+  
+  /* Base Layout Colors - Dark theme */
+  --background: oklch(0.147 0.004 49.25); /* Dark Gray */
+  --foreground: oklch(1 0 0); /* Pure White */
+  --layout-background: oklch(0.12 0.004 49.25); /* Darker Gray */
+  
+  /* Component Background Hierarchy - Dark theme */
+  --component-background: oklch(0.18 0.004 49.25); /* Slightly lighter for components */
+  --card-background: oklch(0.16 0.004 49.25); /* Card background */
+  --surface-background: oklch(0.14 0.004 49.25); /* Surface background */
+  
+  /* Component Colors - Dark Theme */
+  --accent: oklch(0.268 0.007 34.298);
+  --accent-foreground: oklch(1 0 0);
+
+  --card: var(--card-background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --secondary-background: oklch(0.268 0.007 34.298);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.268 0.007 34.298);
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --muted-light: oklch(0.22 0.004 49.25); /* Lighter muted for dark mode */
+  --muted-dark: oklch(0.15 0.004 49.25); /* Darker muted for dark mode */
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --input-placeholder: oklch(0.709 0.01 56.259);
+  --ring: oklch(0.553 0.013 58.071);
+} 
